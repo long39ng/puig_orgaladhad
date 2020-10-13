@@ -1,0 +1,78 @@
+---
+title: "TidyTuesday 2020/42: Datasaurus Dozen"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, comment = "#>",
+                      fig.path = "figs/", fig.retina = 2)
+```
+
+```{r prep, message=FALSE}
+library(tidyverse)
+library(ggridges)
+library(patchwork)
+
+source(here::here("scripts/default_theme.R"))
+```
+
+```{r data, message=FALSE}
+datasaurus <- read_csv("https://github.com/rfordatascience/tidytuesday/raw/master/data/2020/2020-10-13/datasaurus.csv")
+
+glimpse(datasaurus)
+```
+
+```{r fig.asp=1}
+datasaurus %>% 
+  ggplot(aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~dataset) +
+  panel_grid()
+```
+
+```{r}
+datasaurus_lm <- datasaurus %>% 
+  nest(data = -dataset) %>% 
+  mutate(model = map(data, ~ lm(y ~ x, data = .x)),
+         coefs = map(model, broom::tidy)) %>% 
+  unnest(coefs)
+
+datasaurus_lm
+```
+
+```{r}
+datasaurus_lm %>% 
+  mutate(term = if_else(term == "x", "Slope", "Intercept")) %>% 
+  ggplot(aes(estimate, fct_reorder(dataset, estimate, max))) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = estimate - std.error,
+                     xmax = estimate + std.error),
+                 height = 0) +
+  labs(x = NULL, y = NULL, title = "Linear regression estimates") +
+  panel_grid("X") +
+  facet_wrap(~term, scales = "free_x")
+```
+
+```{r out.width="100%"}
+ridges_x <- datasaurus %>% 
+  ggplot(aes(x, fct_reorder(dataset, x, PerformanceAnalytics::kurtosis),
+             fill = stat(x))) +
+  geom_density_ridges_gradient(colour = "white", show.legend = FALSE,
+                               scale = 2.3, rel_min_height = .01) +
+  scale_fill_viridis_c(option = "A", direction = -1) +
+  labs(y = NULL, subtitle = "Ordered by kurtosis") +
+  panel_grid("Xx")
+
+ridges_y <- datasaurus %>% 
+  ggplot(aes(y, fct_reorder(dataset, y, PerformanceAnalytics::kurtosis),
+             fill = stat(x))) +
+  geom_density_ridges_gradient(colour = "white", show.legend = FALSE,
+                               scale = 2.3, rel_min_height = .01) +
+  scale_fill_viridis_c(option = "A", direction = -1) +
+  labs(y = NULL, subtitle = "Ordered by kurtosis") +
+  theme(plot.subtitle = element_markdown(colour = "white")) +
+  panel_grid("Xx")
+
+ridges_x + ridges_y & theme(plot.margin = margin(15, 15, 15, 15))
+```
