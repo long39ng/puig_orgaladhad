@@ -3,8 +3,9 @@ TidyTuesday 2020/42: Datasaurus Dozen
 
 ``` r
 library(tidyverse)
+library(tidytext)
 library(ggridges)
-library(patchwork)
+library(gganimate)
 
 source(here::here("scripts/default_theme.R"))
 ```
@@ -22,6 +23,7 @@ glimpse(datasaurus)
 
 ``` r
 datasaurus %>% 
+  mutate(dataset = as_factor(dataset)) %>% 
   ggplot(aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm") +
@@ -30,7 +32,7 @@ datasaurus %>%
 #> `geom_smooth()` using formula 'y ~ x'
 ```
 
-<img src="figs/unnamed-chunk-1-1.png" width="672" />
+<img src="figs/reg-lines-1.png" width="672" />
 
 ``` r
 datasaurus_lm <- datasaurus %>% 
@@ -69,31 +71,88 @@ datasaurus_lm %>%
   facet_wrap(~term, scales = "free_x")
 ```
 
-<img src="figs/unnamed-chunk-3-1.png" width="672" />
+<img src="figs/lm-coef-plot-1.png" width="672" />
 
 ``` r
-ridges_x <- datasaurus %>% 
-  ggplot(aes(x, fct_reorder(dataset, x, PerformanceAnalytics::kurtosis),
+datasaurus %>% 
+  pivot_longer(-dataset) %>% 
+  ggplot(aes(value,
+             reorder_within(dataset, value, name, PerformanceAnalytics::kurtosis),
              fill = stat(x))) +
   geom_density_ridges_gradient(colour = "white", show.legend = FALSE,
-                               scale = 2.3, rel_min_height = .01) +
+                               scale = 3, rel_min_height = .01) +
+  scale_y_reordered() +
   scale_fill_viridis_c(option = "A", direction = -1) +
-  labs(y = NULL, subtitle = "Ordered by kurtosis") +
-  panel_grid("Xx")
-
-ridges_y <- datasaurus %>% 
-  ggplot(aes(y, fct_reorder(dataset, y, PerformanceAnalytics::kurtosis),
-             fill = stat(x))) +
-  geom_density_ridges_gradient(colour = "white", show.legend = FALSE,
-                               scale = 2.3, rel_min_height = .01) +
-  scale_fill_viridis_c(option = "A", direction = -1) +
-  labs(y = NULL, subtitle = "Ordered by kurtosis") +
-  theme(plot.subtitle = element_markdown(colour = "white")) +
-  panel_grid("Xx")
-
-ridges_x + ridges_y & theme(plot.margin = margin(15, 15, 15, 15))
+  facet_wrap(~name, scales = "free") +
+  labs(x = NULL, y = NULL, subtitle = "Ordered by kurtosis") +
+  panel_grid("Xx") +
+  theme(axis.text.y = element_text(vjust = 0))
 #> Picking joint bandwidth of 5.46
 #> Picking joint bandwidth of 9
 ```
 
-<img src="figs/unnamed-chunk-4-1.png" width="100%" />
+<img src="figs/ridges-1.png" width="90%" />
+
+``` r
+theme_set(ggCyberPunk::theme_cyberpunk(font = "Bandal",
+                                       base.size = 18, title.size = 20) +
+            theme(strip.text = element_text(family = "Bandal"),
+                  axis.text.y = element_text(hjust = 1, margin = margin(r = 5))))
+
+geom_glowing_hline <- function(..., alpha = 1, size = 1.2, glow_alpha = .03, layers = 10L) {
+  geoms <- vector(mode = "list", length = layers)
+  for (i in seq_len(layers)) {
+    geoms <- c(geoms, geom_hline(...,
+                                 size = size * 4 - (1 - (i - 1) / layers),
+                                 alpha = alpha * glow_alpha))
+  }
+  geoms <- c(geoms,
+             geom_hline(..., size = size * 1, alpha = alpha),
+             geom_hline(..., colour = "white", size = size * .4, alpha = alpha * .4))
+}
+
+geom_glowing_text <- function(..., alpha = 1, size = 3.5, glow_alpha = .15, layers = 10L) {
+  geoms <- vector(mode = "list", length = layers)
+  for (i in seq_len(layers)) {
+    geoms <- c(geoms, geom_text(...,
+                                size = size + i * .05,
+                                alpha = alpha * glow_alpha))
+  }
+  geoms <- c(geoms,
+             geom_text(..., size = size, alpha = alpha),
+             geom_text(..., colour = "white", size = size, alpha = alpha * .4))
+}
+
+cumsd <- function (x) {
+  x <- x - x[sample.int(length(x), 1)]
+  n <- seq_along(x)
+  sd <- sqrt((cumsum(x ^ 2) - cumsum(x) ^ 2 / n) / (n - 1))
+  sd
+}
+
+cyberpunk_prep <- datasaurus %>% 
+  mutate(dataset = as_factor(str_to_upper(dataset))) %>% 
+  group_by(dataset) %>% 
+  arrange(x) %>% 
+  mutate(cummean_y = cummean(y),
+         cumsd_y = format(cumsd(y), digits = 1, nsmall = 1)) %>% 
+  ungroup()
+
+anim_cyberpunk <- cyberpunk_prep %>% 
+  ggplot(aes(x, y)) +
+  geom_point(aes(group = seq_along(x)), colour = "#EE9537", size = .3) +
+  geom_glowing_hline(aes(yintercept = cummean_y, colour = dataset), show.legend = FALSE) +
+  geom_glowing_text(aes(90, 10, label = cumsd_y, colour = dataset),
+                    family = "Bandal", show.legend = FALSE) +
+  facet_wrap(~dataset) + 
+  labs(x = "Standard deviation in the bottom right corner of each plot.", y = NULL,
+       title = "Cumulative mean and standard deviation of Y") +
+  transition_reveal(x)
+```
+
+``` r
+animate(anim_cyberpunk, nframes = 60, end_pause = 4,
+        width = 600, height = 600, units = "px")
+```
+
+![](figs/animate-render-1.gif)<!-- -->

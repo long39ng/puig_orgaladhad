@@ -2,6 +2,8 @@
 
 My attempts at #tidytuesday
 
+![](2020_42_datasaurus/figs/animate-render-1.gif)
+
 ## 2020
 
 | Week | Date | Data | 

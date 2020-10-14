@@ -10,8 +10,9 @@ knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, comment = "#>",
 
 ```{r prep, message=FALSE}
 library(tidyverse)
+library(tidytext)
 library(ggridges)
-library(patchwork)
+library(gganimate)
 
 source(here::here("scripts/default_theme.R"))
 ```
@@ -22,8 +23,9 @@ datasaurus <- read_csv("https://github.com/rfordatascience/tidytuesday/raw/maste
 glimpse(datasaurus)
 ```
 
-```{r fig.asp=1}
+```{r reg-lines, fig.asp=1}
 datasaurus %>% 
+  mutate(dataset = as_factor(dataset)) %>% 
   ggplot(aes(x, y)) +
   geom_point() +
   geom_smooth(method = "lm") +
@@ -31,7 +33,7 @@ datasaurus %>%
   panel_grid()
 ```
 
-```{r}
+```{r lm-coefs}
 datasaurus_lm <- datasaurus %>% 
   nest(data = -dataset) %>% 
   mutate(model = map(data, ~ lm(y ~ x, data = .x)),
@@ -41,7 +43,7 @@ datasaurus_lm <- datasaurus %>%
 datasaurus_lm
 ```
 
-```{r}
+```{r lm-coef-plot}
 datasaurus_lm %>% 
   mutate(term = if_else(term == "x", "Slope", "Intercept")) %>% 
   ggplot(aes(estimate, fct_reorder(dataset, estimate, max))) +
@@ -54,25 +56,80 @@ datasaurus_lm %>%
   facet_wrap(~term, scales = "free_x")
 ```
 
-```{r out.width="100%"}
-ridges_x <- datasaurus %>% 
-  ggplot(aes(x, fct_reorder(dataset, x, PerformanceAnalytics::kurtosis),
+```{r ridges, fig.width=10, fig.asp=.6, out.width="90%"}
+datasaurus %>% 
+  pivot_longer(-dataset) %>% 
+  ggplot(aes(value,
+             reorder_within(dataset, value, name, PerformanceAnalytics::kurtosis),
              fill = stat(x))) +
   geom_density_ridges_gradient(colour = "white", show.legend = FALSE,
-                               scale = 2.3, rel_min_height = .01) +
+                               scale = 3, rel_min_height = .01) +
+  scale_y_reordered() +
   scale_fill_viridis_c(option = "A", direction = -1) +
-  labs(y = NULL, subtitle = "Ordered by kurtosis") +
-  panel_grid("Xx")
+  facet_wrap(~name, scales = "free") +
+  labs(x = NULL, y = NULL, subtitle = "Ordered by kurtosis") +
+  panel_grid("Xx") +
+  theme(axis.text.y = element_text(vjust = 0))
+```
 
-ridges_y <- datasaurus %>% 
-  ggplot(aes(y, fct_reorder(dataset, y, PerformanceAnalytics::kurtosis),
-             fill = stat(x))) +
-  geom_density_ridges_gradient(colour = "white", show.legend = FALSE,
-                               scale = 2.3, rel_min_height = .01) +
-  scale_fill_viridis_c(option = "A", direction = -1) +
-  labs(y = NULL, subtitle = "Ordered by kurtosis") +
-  theme(plot.subtitle = element_markdown(colour = "white")) +
-  panel_grid("Xx")
+```{r animate-prep}
+theme_set(ggCyberPunk::theme_cyberpunk(font = "Bandal",
+                                       base.size = 18, title.size = 20) +
+            theme(strip.text = element_text(family = "Bandal"),
+                  axis.text.y = element_text(hjust = 1, margin = margin(r = 5))))
 
-ridges_x + ridges_y & theme(plot.margin = margin(15, 15, 15, 15))
+geom_glowing_hline <- function(..., alpha = 1, size = 1.2, glow_alpha = .03, layers = 10L) {
+  geoms <- vector(mode = "list", length = layers)
+  for (i in seq_len(layers)) {
+    geoms <- c(geoms, geom_hline(...,
+                                 size = size * 4 - (1 - (i - 1) / layers),
+                                 alpha = alpha * glow_alpha))
+  }
+  geoms <- c(geoms,
+             geom_hline(..., size = size * 1, alpha = alpha),
+             geom_hline(..., colour = "white", size = size * .4, alpha = alpha * .4))
+}
+
+geom_glowing_text <- function(..., alpha = 1, size = 3.5, glow_alpha = .15, layers = 10L) {
+  geoms <- vector(mode = "list", length = layers)
+  for (i in seq_len(layers)) {
+    geoms <- c(geoms, geom_text(...,
+                                size = size + i * .05,
+                                alpha = alpha * glow_alpha))
+  }
+  geoms <- c(geoms,
+             geom_text(..., size = size, alpha = alpha),
+             geom_text(..., colour = "white", size = size, alpha = alpha * .4))
+}
+
+cumsd <- function (x) {
+  x <- x - x[sample.int(length(x), 1)]
+  n <- seq_along(x)
+  sd <- sqrt((cumsum(x ^ 2) - cumsum(x) ^ 2 / n) / (n - 1))
+  sd
+}
+
+cyberpunk_prep <- datasaurus %>% 
+  mutate(dataset = as_factor(str_to_upper(dataset))) %>% 
+  group_by(dataset) %>% 
+  arrange(x) %>% 
+  mutate(cummean_y = cummean(y),
+         cumsd_y = format(cumsd(y), digits = 1, nsmall = 1)) %>% 
+  ungroup()
+
+anim_cyberpunk <- cyberpunk_prep %>% 
+  ggplot(aes(x, y)) +
+  geom_point(aes(group = seq_along(x)), colour = "#EE9537", size = .3) +
+  geom_glowing_hline(aes(yintercept = cummean_y, colour = dataset), show.legend = FALSE) +
+  geom_glowing_text(aes(90, 10, label = cumsd_y, colour = dataset),
+                    family = "Bandal", show.legend = FALSE) +
+  facet_wrap(~dataset) + 
+  labs(x = "Standard deviation in the bottom right corner of each plot.", y = NULL,
+       title = "Cumulative mean and standard deviation of Y") +
+  transition_reveal(x)
+```
+
+```{r animate-render, cache=TRUE}
+animate(anim_cyberpunk, nframes = 60, end_pause = 4,
+        width = 600, height = 600, units = "px")
 ```
