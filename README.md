@@ -9,3 +9,4 @@ My attempts at #tidytuesday
 | Week | Date | Data | 
 | :---: | :---: | :--- |
 | [**42**](2020_42_datasaurus) | `2020-10-13` | [`datasauRus` dozen](https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-10-13) |
+| [**44**](2020_44_canadian_wind_turbines) | `2020-10-27` | [Canadian Wind Turbines](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-10-27) |

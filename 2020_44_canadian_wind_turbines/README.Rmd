@@ -1,0 +1,49 @@
+---
+title: "TidyTuesday 2020/44: Canadian Wind Turbines"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, comment = "#>",
+                      fig.path = "figs/", fig.retina = 2)
+```
+
+```{r prep, message=FALSE}
+library(tidyverse)
+library(sf)
+library(rnaturalearth)
+library(gganimate)
+```
+
+```{r data, message=FALSE}
+wind_turbine <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-10-27/wind-turbine.csv')
+
+glimpse(wind_turbine)
+
+wind_turbine_welp <- wind_turbine %>% 
+  mutate(commissioning_date_welp = str_sub(commissioning_date, end = 4) %>% 
+           as.integer())
+```
+
+```{r animate}
+anim_turbines <- ne_states("Canada", returnclass = "sf") %>% 
+  ggplot() +
+  geom_sf(colour = "#f8f8f8") +
+  geom_jitter(data = wind_turbine_welp,
+              aes(longitude, latitude, colour = turbine_rated_capacity_k_w,
+                  group = seq_along(objectid)),
+              alpha = .4, size = 2.5) +
+  scale_colour_viridis_c(
+    begin = .3, end = .95, direction = -1,
+    labels = function(x) paste(x, "kW"),
+    guide = guide_legend(override.aes = list(alpha = 1, size = 2.5))
+  ) +
+  labs(title = "Wind turbines in Canada",
+       subtitle = "Year: {frame_along}") +
+  theme_void(base_family = "Asap Condensed", base_size = 16) +
+  theme(legend.position = "bottom", legend.title = element_blank()) +
+  transition_reveal(commissioning_date_welp)
+
+animate(anim_turbines, end_pause = 6, width = 600, height = 600, units = "px")
+```
+
