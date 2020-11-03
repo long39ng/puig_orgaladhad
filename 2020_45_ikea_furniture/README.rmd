@@ -1,0 +1,121 @@
+---
+title: "TidyTuesday 2020/45: IKEA Furniture"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, comment = "#>",
+                      fig.path = "figs/", dpi = 300)
+```
+
+```{r prep, message=FALSE}
+library(tidyverse)
+library(gender)
+library(ggtext)
+library(ggalt)
+library(ggrepel)
+
+theme_set(
+  theme_minimal(base_size = 16) +
+    theme(axis.text = element_text(family = "Poppins", colour = "#0057A5"),
+          panel.grid = element_blank(),
+          plot.background = element_rect(fill = "#DCDCDC"),
+          plot.margin = margin(30, 30, 30, 30),
+          plot.title = element_markdown(family = "BioRhyme",
+                                        face = "bold",
+                                        colour = "#978466"),
+          plot.title.position = "plot",
+          plot.caption = element_markdown(family = "Poppins",
+                                          size = 11,
+                                          colour = "#0057A5"),
+          plot.caption.position = "plot")
+)
+```
+
+```{r data}
+ikea <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-11-03/ikea.csv',
+                        col_types = "iiccnclcccciii")
+
+glimpse(ikea)
+```
+
+```{r explore-groups}
+ikea %>% 
+  count(category)
+
+ikea %>% 
+  distinct(designer)
+
+ikea %>% 
+  select(designer) %>% 
+  filter(str_detect(designer, "/"))
+
+ikea %>% 
+  mutate(n_designers = str_count(designer, "/") + 1L,
+         .keep = "used") %>% 
+  arrange(-n_designers)
+
+ikea %>% 
+  filter(is.na(designer))
+```
+
+```{r separate-designers}
+ikea_designers <- ikea %>% 
+  separate(designer, into = paste0("designer", 1:7), sep = "/", fill = "right") %>% 
+  pivot_longer(starts_with("designer"),
+               names_to = "designer_no", values_to = "designer") %>% 
+  drop_na(designer) %>% 
+  mutate(designer_first_name = str_extract(designer, "^\\p{Lu}\\p{Ll}+"))
+
+# ikea_designers %>% 
+#   filter(is.na(designer_first_name)) %>% 
+#   distinct(designer_first_name) %>% 
+#   View()
+```
+
+```{r predict-gender, cache=TRUE}
+designer_names <- ikea_designers %>% 
+  drop_na(designer_first_name) %>% 
+  pull(designer_first_name) %>% 
+  unique()
+
+names_genderized <- gender(designer_names, method = "genderize") %>% 
+  # Manual fix-ups
+  mutate(gender = case_when(name == "Ehlén" ~ "female",
+                            name == "Synnöve" ~ "female",
+                            name == "Hilland" ~ "female",
+                            name == "Chenyi" ~ "female",
+                            name == "Studio" ~ NA_character_,
+                            TRUE ~ gender)) %>% 
+  select(designer_first_name = name, gender)
+```
+
+```{r dumbbell, fig.width=8, fig.height=10}
+ikea_gender_count <- ikea_designers %>% 
+  left_join(names_genderized, by = "designer_first_name") %>% 
+  drop_na(gender) %>% 
+  distinct(item_id, category, gender, .keep_all = TRUE) %>% 
+  count(category, gender)
+
+ikea_gender_count %>% 
+  pivot_wider(names_from = gender, values_from = n) %>% 
+  ggplot(aes(y = fct_reorder(category, female))) +
+  geom_dumbbell(aes(x = female, xend = male),
+                colour_x = "#72BEBA", colour_xend = "#D85827",
+                size_x = 4.5, size_xend = 4.5,
+                colour = "#978466", size = 2,
+                dot_guide = TRUE, dot_guide_colour = "#FFDC00") +
+  geom_text_repel(aes(x = n, y = category, label = n, colour = gender),
+                  data = ikea_gender_count,
+                  family = "Poppins", size = 5, direction = "x", nudge_y = -.4,
+                  segment.size = 0, force = .1, show.legend = FALSE) +
+  scale_colour_manual(values = c("#72BEBA", "#D85827")) +
+  labs(x = NULL, y = NULL,
+       title = "Number of <span style='color:#0057A5'>IKEA</span> 
+       products designed by<br><br><span style='color:#72BEBA'>female</span> vs 
+       <span style='color:#D85827'>male</span> designers<br>",
+       caption = "<br>Gender is predicted based on designers' first names using the Genderize.io API.<br>
+       Names that cannot be classified (e.g. initials only, studio names, \"IKEA\") are excluded.<br>
+       Products designed by both female and male designers are counted twice.") +
+  theme(axis.text.x = element_blank())
+```
