@@ -178,18 +178,18 @@ ikea_gender_count %>%
   pivot_wider(names_from = gender, values_from = n) %>% 
   ggplot(aes(y = fct_reorder(category, female))) +
   geom_dumbbell(aes(x = female, xend = male),
-                colour_x = "#72BEBA", colour_xend = "#D85827",
+                colour_x = "#388E8A", colour_xend = "#D85827",
                 size_x = 4.5, size_xend = 4.5,
                 colour = "#978466", size = 2,
-                dot_guide = TRUE, dot_guide_colour = "#FFDC00") +
+                dot_guide = TRUE, dot_guide_colour = "#DDB952") +
   geom_text_repel(aes(x = n, y = category, label = n, colour = gender),
                   data = ikea_gender_count,
                   family = "Poppins", size = 5, direction = "x", nudge_y = -.4,
                   segment.size = 0, force = .1, show.legend = FALSE) +
-  scale_colour_manual(values = c("#72BEBA", "#D85827")) +
+  scale_colour_manual(values = c("#388E8A", "#D85827")) +
   labs(x = NULL, y = NULL,
        title = "Number of <span style='color:#0057A5'>IKEA</span> 
-       products designed by<br><br><span style='color:#72BEBA'>female</span> vs 
+       products designed by<br><br><span style='color:#388E8A'>female</span> vs 
        <span style='color:#D85827'>male</span> designers<br>",
        caption = "<br>Gender is predicted based on designers' first names using the Genderize.io API.<br>
        Names that cannot be classified (e.g. initials only, studio names, \"IKEA\") are excluded.<br>
