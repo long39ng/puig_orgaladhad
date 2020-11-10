@@ -1,0 +1,123 @@
+---
+title: "TidyTuesday 2020/46: Historical Phones"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, comment = "#>",
+                      fig.path = "figs/", dpi = 300)
+```
+
+```{r prep, message=FALSE}
+library(tidyverse)
+library(colorspace)
+library(patchwork)
+library(magick)
+library(ggtext)
+
+theme_set(
+  theme_minimal() +
+    theme(axis.text = element_text(family = "Space Mono"),
+          panel.grid = element_blank(),
+          plot.title = element_text(family = "Space Mono",
+                                    face = "bold",
+                                    size = rel(1.6)),
+          plot.caption = element_markdown(family = "Space Mono",
+                                          face = "bold.italic",
+                                          hjust = 0))
+)
+```
+
+```{r data}
+landline <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-11-10/landline.csv',
+                            col_types = "cciinnc")
+
+glimpse(landline)
+
+mobile <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-11-10/mobile.csv',
+                            col_types = "cciinnc")
+
+glimpse(mobile)
+```
+
+
+```{r}
+world_map <- rnaturalearth::ne_countries(returnclass = "sf") %>% 
+  select(iso_a3, geometry)
+```
+
+```{r world-mobile-animation, cache=TRUE, warning=FALSE}
+map_hist_layout <- c(
+  area(1, 1, 13, 14), # Map
+  area(12, 8, 13, 11), # Histogram
+  area(14, 1, 15, 14) # Slider
+)
+
+# # Determine histogram axis limit and number of bins
+# mobile %>% 
+#   semi_join(world_map, by = c("code" = "iso_a3")) %>% 
+#   group_by(year) %>% 
+#   slice_max(mobile_subs) %>% 
+#   View()
+
+mobile_img <- image_graph(875, 600, res = 96)
+
+mobile_year_list <- group_split(mobile, year)
+
+out <- map(mobile_year_list, function(data) {
+  mobile_data <- world_map %>% 
+    filter(iso_a3 != "ATA") %>% # Antarctica
+    left_join(data %>% 
+                select(code, mobile_subs), by = c("iso_a3" = "code"))
+  
+  mobile_map <- ggplot(
+    mobile_data,
+    aes(fill = cut_width(mobile_subs, width = 20, boundary = 0))
+  ) +
+    geom_sf(colour = "#f8f8f8", size = .25, show.legend = FALSE) +
+    coord_sf(label_axes = "----", expand = FALSE,
+             crs = "+proj=robin") + # Robinson projection
+    scale_fill_discrete_sequential("YlGnBu", na.value = "#cccccc", nmax = 11) +
+    theme(plot.margin = margin(0, 0, 0, 0))
+  
+  mobile_hist <- ggplot(
+    mobile_data,
+    aes(mobile_subs, fill = cut_width(mobile_subs, width = 20, boundary = 0))
+  ) +
+    geom_histogram(binwidth = 20, boundary = 0, show.legend = FALSE) +
+    scale_x_continuous(limits = c(0, 220), n.breaks = 12,
+                       labels = function(x) {
+                         x[seq(2, 12, by = 2)] <- ""
+                         x
+                       }) +
+    scale_fill_discrete_sequential("YlGnBu", nmax = 11) +
+    coord_cartesian(expand = FALSE) +
+    theme(axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          axis.text.y = element_blank(),
+          plot.margin = margin(0, 0, 0, 0))
+  
+  year_slider <- ggplot(data = NULL, aes(x = 1990:2017, y = 1)) +
+    geom_line(size = 2, colour = "#cccccc") +
+    geom_point(aes(x = data$year), shape = 21, size = 4.5, stroke = .6,
+               fill = "#f8f8f8", colour = "#26185f") +
+    geom_text(aes(x = data$year, y = 1, label = data$year),
+              vjust = 1.75, family = "Space Mono") +
+    theme_void()
+  
+  print(
+    mobile_map + mobile_hist + year_slider +
+      plot_layout(design = map_hist_layout) +
+      plot_annotation(
+        title = "Mobile phone subscriptions per 100 people",
+        caption = "Source: OurWorldInData.org<br>
+                   *Antarctica not included"
+      )
+  )
+})
+
+dev.off()
+
+mobile_anim <- image_animate(mobile_img, fps = 2)
+print(mobile_anim)
+```
