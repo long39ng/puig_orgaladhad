@@ -1,0 +1,81 @@
+---
+title: "TidyTuesday 2020/48: Washington Trails"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, comment = "#>",
+                      fig.path = "figs/", dpi = 300)
+```
+
+```{r prep, message=FALSE}
+library(tidyverse)
+
+theme_set(
+  theme_minimal(base_size = 15,
+                base_family = "FantasqueSansMono Nerd Font") +
+    theme(panel.ontop = TRUE,
+          panel.grid = element_line(colour = "#EDEAC2"),
+          panel.grid.minor = element_blank(),
+          panel.grid.major.y = element_blank(),
+          plot.background = element_rect(fill = "#EDEAC2"),
+          plot.margin = margin(30, 30, 30, 30),
+          plot.title.position = "plot",
+          plot.caption.position = "plot")
+)
+```
+
+```{r data}
+hike_data <- tidytuesdayR::tt_load(2020, 48)$hike_data
+
+glimpse(hike_data)
+
+# Check data type
+hike_data %>% 
+  filter(str_detect(gain, "\\.") | !str_detect(highpoint, ".0$"))
+
+(all_features <- hike_data %>% 
+    pull(features) %>% 
+    unlist() %>% 
+    unique() %>% 
+    sort())
+
+hike_data_cleaned <- hike_data %>% 
+  rownames_to_column("id") %>% 
+  # https://www.youtube.com/watch?v=8w1itDDm8QU
+  mutate(location_general = str_replace_all(location, "(.*)\\s[-][-].*", "\\1"),
+         length_total = parse_number(length) * (str_detect(length, "one-way") + 1),
+         gain = as.integer(gain),
+         highpoint = as.numeric(highpoint),
+         rating = as.numeric(rating))
+```
+
+```{r preprocess}
+hike_data_long <- hike_data_cleaned %>% 
+  unnest(features, keep_empty = TRUE)
+
+hike_data_onehot <- hike_data_long %>% 
+  mutate(n = 1L) %>% 
+  pivot_wider(names_from = features, values_from = n) %>% 
+  select(-`NA`) %>% 
+  mutate(across(everything(), ~ replace_na(.x, 0L)))
+```
+
+```{r corr-plot}
+sad_doge <- magick::image_read("figs/sad_doge.jpg") %>% 
+  as.raster()
+
+hike_data_onehot %>% 
+  select(rating, `Dogs allowed on leash`:Summits) %>% 
+  correlation::correlation() %>% 
+  filter(Parameter1 == "rating") %>% 
+  ggplot(aes(r, fct_reorder(Parameter2, r))) +
+  geom_col(aes(fill = r > 0), width = .5, show.legend = FALSE) +
+  scale_x_continuous(position = "top") +
+  scale_fill_manual(values = c("#A36B2B", "#2686A0")) +
+  annotation_raster(sad_doge, .102, .143, 1.5, 6, interpolate = TRUE) +
+  labs(x = NULL, y = NULL,
+       title = "Correlation of User Ratings with Features",
+       subtitle = "of Washington Hiking Trails",
+       caption = "Data: Washington Trails Association")
+```
