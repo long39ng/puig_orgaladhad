@@ -79,9 +79,6 @@ hike_data_onehot <- hike_data_long %>%
 ```
 
 ``` r
-sad_doge <- magick::image_read("figs/sad_doge.jpg") %>% 
-  as.raster()
-
 hike_data_onehot %>% 
   select(rating, `Dogs allowed on leash`:Summits) %>% 
   correlation::correlation() %>% 
@@ -90,7 +87,9 @@ hike_data_onehot %>%
   geom_col(aes(fill = r > 0), width = .5, show.legend = FALSE) +
   scale_x_continuous(position = "top") +
   scale_fill_manual(values = c("#A36B2B", "#2686A0")) +
-  annotation_raster(sad_doge, .102, .143, 1.5, 6, interpolate = TRUE) +
+  annotation_raster(magick::image_read("https://i.imgflip.com/sepum.jpg") %>% 
+                      as.raster(),
+                    .102, .143, 1.5, 6, interpolate = TRUE) +
   labs(x = NULL, y = NULL,
        title = "Correlation of User Ratings with Features",
        subtitle = "of Washington Hiking Trails",
