@@ -33,20 +33,20 @@ ikea <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidyt
 glimpse(ikea)
 #> Rows: 3,694
 #> Columns: 14
-#> $ X1                [3m[38;5;246m<int>[39m[23m 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1…
-#> $ item_id           [3m[38;5;246m<int>[39m[23m 90420332, 368814, 9333523, 80155205, 30180504, 1012…
-#> $ name              [3m[38;5;246m<chr>[39m[23m "FREKVENS", "NORDVIKEN", "NORDVIKEN / NORDVIKEN", "…
-#> $ category          [3m[38;5;246m<chr>[39m[23m "Bar furniture", "Bar furniture", "Bar furniture", …
-#> $ price             [3m[38;5;246m<dbl>[39m[23m 265, 995, 2095, 69, 225, 345, 129, 195, 129, 2176, …
-#> $ old_price         [3m[38;5;246m<chr>[39m[23m "No old price", "No old price", "No old price", "No…
-#> $ sellable_online   [3m[38;5;246m<lgl>[39m[23m TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, T…
-#> $ link              [3m[38;5;246m<chr>[39m[23m "https://www.ikea.com/sa/en/p/frekvens-bar-table-in…
-#> $ other_colors      [3m[38;5;246m<chr>[39m[23m "No", "No", "No", "Yes", "No", "No", "No", "No", "N…
-#> $ short_description [3m[38;5;246m<chr>[39m[23m "Bar table, in/outdoor,          51x51 cm", "Bar ta…
-#> $ designer          [3m[38;5;246m<chr>[39m[23m "Nicholai Wiig Hansen", "Francis Cayouette", "Franc…
-#> $ depth             [3m[38;5;246m<int>[39m[23m NA, NA, NA, 50, 60, 45, 44, 50, 44, NA, 44, 45, 47,…
-#> $ height            [3m[38;5;246m<int>[39m[23m 99, 105, NA, 100, 43, 91, 95, NA, 95, NA, 103, 102,…
-#> $ width             [3m[38;5;246m<int>[39m[23m 51, 80, NA, 60, 74, 40, 50, 50, 50, NA, 52, 40, 46,…
+#> $ X1                <int> 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1…
+#> $ item_id           <int> 90420332, 368814, 9333523, 80155205, 30180504, 1012…
+#> $ name              <chr> "FREKVENS", "NORDVIKEN", "NORDVIKEN / NORDVIKEN", "…
+#> $ category          <chr> "Bar furniture", "Bar furniture", "Bar furniture", …
+#> $ price             <dbl> 265, 995, 2095, 69, 225, 345, 129, 195, 129, 2176, …
+#> $ old_price         <chr> "No old price", "No old price", "No old price", "No…
+#> $ sellable_online   <lgl> TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, T…
+#> $ link              <chr> "https://www.ikea.com/sa/en/p/frekvens-bar-table-in…
+#> $ other_colors      <chr> "No", "No", "No", "Yes", "No", "No", "No", "No", "N…
+#> $ short_description <chr> "Bar table, in/outdoor,          51x51 cm", "Bar ta…
+#> $ designer          <chr> "Nicholai Wiig Hansen", "Francis Cayouette", "Franc…
+#> $ depth             <int> NA, NA, NA, 50, 60, 45, 44, 50, 44, NA, 44, 45, 47,…
+#> $ height            <int> 99, 105, NA, 100, 43, 91, 95, NA, 95, NA, 103, 102,…
+#> $ width             <int> 51, 80, NA, 60, 74, 40, 50, 50, 50, NA, 52, 40, 46,…
 ```
 
 ``` r

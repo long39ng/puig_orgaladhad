@@ -6,6 +6,7 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, comment = "#>",
                       fig.path = "figs/", dpi = 300)
+knitr::knit_hooks$set(optipng = knitr::hook_optipng)
 ```
 
 ```{r prep, message=FALSE}
@@ -90,7 +91,7 @@ names_genderized <- gender(designer_names, method = "genderize") %>%
   select(designer_first_name = name, gender)
 ```
 
-```{r dumbbell, fig.width=8, fig.height=10}
+```{r dumbbell, fig.width=8, fig.height=10, optipng=''}
 ikea_gender_count <- ikea_designers %>% 
   left_join(names_genderized, by = "designer_first_name") %>% 
   drop_na(gender) %>% 

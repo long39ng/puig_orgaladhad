@@ -30,14 +30,14 @@ hike_data <- tidytuesdayR::tt_load(2020, 48)$hike_data
 glimpse(hike_data)
 #> Rows: 1,958
 #> Columns: 8
-#> $ name        [3m[38;5;246m<chr>[39m[23m "Lake Hills Greenbelt", "Snow Lake", "Skookum Flats", "Te…
-#> $ location    [3m[38;5;246m<chr>[39m[23m "Puget Sound and Islands -- Seattle-Tacoma Area", "Snoqua…
-#> $ length      [3m[38;5;246m<chr>[39m[23m "2.3 miles, roundtrip", "7.2 miles, roundtrip", "7.8 mile…
-#> $ gain        [3m[38;5;246m<chr>[39m[23m "50", "1800", "300", "1585", "500", "500", "425", "450", …
-#> $ highpoint   [3m[38;5;246m<chr>[39m[23m "330.0", "4400.0", "2550.0", "2370.0", "1000.0", "2200.0"…
-#> $ rating      [3m[38;5;246m<chr>[39m[23m "3.67", "4.16", "3.68", "3.92", "4.14", "3.14", "5.00", "…
-#> $ features    [3m[38;5;246m<list>[39m[23m [<"Dogs allowed on leash", "Wildlife", "Good for kids", …
-#> $ description [3m[38;5;246m<chr>[39m[23m "Hike through a pastoral area first settled and farmed in…
+#> $ name        <chr> "Lake Hills Greenbelt", "Snow Lake", "Skookum Flats", "Te…
+#> $ location    <chr> "Puget Sound and Islands -- Seattle-Tacoma Area", "Snoqua…
+#> $ length      <chr> "2.3 miles, roundtrip", "7.2 miles, roundtrip", "7.8 mile…
+#> $ gain        <chr> "50", "1800", "300", "1585", "500", "500", "425", "450", …
+#> $ highpoint   <chr> "330.0", "4400.0", "2550.0", "2370.0", "1000.0", "2200.0"…
+#> $ rating      <chr> "3.67", "4.16", "3.68", "3.92", "4.14", "3.14", "5.00", "…
+#> $ features    <list> [<"Dogs allowed on leash", "Wildlife", "Good for kids", …
+#> $ description <chr> "Hike through a pastoral area first settled and farmed in…
 
 # Check data type
 hike_data %>% 

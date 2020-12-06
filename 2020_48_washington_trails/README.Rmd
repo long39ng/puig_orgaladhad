@@ -6,6 +6,7 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, comment = "#>",
                       fig.path = "figs/", dpi = 300)
+knitr::knit_hooks$set(optipng = knitr::hook_optipng)
 ```
 
 ```{r prep, message=FALSE}
@@ -61,7 +62,7 @@ hike_data_onehot <- hike_data_long %>%
   mutate(across(everything(), ~ replace_na(.x, 0L)))
 ```
 
-```{r corr-plot}
+```{r corr-plot, optipng=''}
 hike_data_onehot %>% 
   select(rating, `Dogs allowed on leash`:Summits) %>% 
   correlation::correlation() %>% 
