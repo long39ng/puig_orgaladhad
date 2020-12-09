@@ -16,19 +16,18 @@ knitr::opts_chunk$set(
 knitr::knit_hooks$set(optipng = knitr::hook_optipng)
 ```
 
-```{r prep, message=FALSE}
+```{r ref.label="all", echo=FALSE, message=FALSE}
+```
+
+```{r all, eval=FALSE}
 library(tidyverse)
 library(reactable)
 library(crosstalk)
 library(htmltools)
-```
 
-```{r data, message=FALSE}
 women <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-12-08/women.csv")
 shared_women <- SharedData$new(women %>% relocate(img, name, country))
-```
 
-```{r table}
 bscols(
   widths = c(2, NA),
   div(filter_checkbox("category", "Category", shared_women, ~category),
