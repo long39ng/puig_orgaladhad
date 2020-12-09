@@ -1,0 +1,164 @@
+---
+title: "TidyTuesday 2020/50: Women of 2020"
+output:
+  html_document:
+    code_folding: show
+---
+
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;800&display=swap" rel="stylesheet">
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, collapse = TRUE, comment = "#>",
+  fig.path = "figs/", dpi = 300
+)
+knitr::knit_hooks$set(optipng = knitr::hook_optipng)
+```
+
+```{r prep, message=FALSE}
+library(tidyverse)
+library(reactable)
+library(crosstalk)
+library(htmltools)
+```
+
+```{r data, message=FALSE}
+women <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-12-08/women.csv")
+shared_women <- SharedData$new(women %>% relocate(img, name, country))
+```
+
+```{r table}
+bscols(
+  widths = c(2, NA),
+  div(filter_checkbox("category", "Category", shared_women, ~category),
+    style = "font-family: 'Manrope', sans-serif"
+  ),
+  shared_women %>%
+    reactable(
+      details = function(index) {
+        div(women$description[index],
+          style = list(
+            padding = "0.5em 0.5in 2em",
+            "font-size" = "0.9em"
+          )
+        )
+      },
+      columns = list(
+        img = colDef(name = "", width = 60, cell = function(value, row_index) {
+          image <- img(
+            src = value, height = "36px", alt = value,
+            class = paste0(
+              "profile-img category-",
+              tolower(women$category[row_index])
+            )
+          )
+          tagList(
+            div(style = list(display = "inline-block", width = "45px"), image),
+          )
+        },
+        style = list("padding-top" = 0, border = "none")),
+        name = colDef(
+          name = "Name",
+          html = TRUE,
+          cell = function(value) {
+            sprintf(
+              '<a href="https://en.wikipedia.org/wiki/%s" target="_blank">%s</a>',
+              str_replace_all(value, "\\s", "_"),
+              value
+            )
+          }
+        ),
+        country = colDef(name = "Country"),
+        category = colDef(
+          name = "Category", width = 100,
+          class = function(value) {
+            paste0("category-icon category-", tolower(value))
+          }
+        ),
+        role = colDef(
+          name = "Role",
+          style = list("padding-left" = "20px", border = "none"),
+          headerStyle = list("padding-left" = "20px")
+        ),
+        description = colDef(show = FALSE)
+      ),
+      sortable = TRUE, searchable = TRUE,
+      defaultColDef = colDef(
+        class = JS("function(rowInfo, colInfo, state) {
+          // Highlight sorted columns
+          for (var i = 0; i < state.sorted.length; i++) {
+            if (state.sorted[i].id === colInfo.id) {
+              return 'sorted'
+            }
+          }
+        }"),
+        style = list(border = "none")
+      ),
+      theme = reactableTheme(
+        style = list(
+          "font-family" = "'Manrope', sans-serif",
+          border = "1px solid hsl(213, 33%, 93%)",
+          "border-radius" = "4px",
+          "box-shadow" = "0 4px 8px 0 rgba(0, 0, 0, 0.1)",
+          # Category icon classes
+          ".category-icon" = list(
+            color = "#fff",
+            "font-size" = "0.85em",
+            "text-align" = "center",
+            "text-transform" = "uppercase",
+            height = "2.7em",
+            display = "inline-block",
+            cursor = "pointer",
+            "border-radius" = "1.35em",
+            "margin-top" = "3px"
+          ),
+          ".category-all" = list(
+            "background-color" = "#596165",
+            "border-color" = "#596165"
+          ),
+          ".category-creativity" = list(
+            "background-color" = "#bf3782",
+            "border-color" = "#bf3782"
+          ),
+          ".category-identity" = list(
+            "background-color" = "#37964b",
+            "border-color" = "#37964b"
+          ),
+          ".category-knowledge" = list(
+            "background-color" = "#43afcd",
+            "border-color" = "#43afcd"
+          ),
+          ".category-leadership" = list(
+            "background-color" = "#b86c35",
+            "border-color" = "#b86c35"
+          ),
+          ".profile-img" = list(
+            "border-radius" = "50%",
+            "border-width" = "2px",
+            "border-style" = "solid"
+          )
+        ),
+        headerStyle = list(
+          "font-weight" = 800,
+          "background-color" = "hsl(213, 45%, 97%)",
+          "border-bottom-color" = "hsl(213, 33%, 93%)",
+          "border-bottom-width" = "1px",
+          color = "hsl(213, 13%, 33%)",
+          "&[aria-sort]:hover" = list(color = "hsl(213, 55%, 50%)"),
+          padding = "8px 8px 16px",
+          "margin-bottom" = "8px"
+        ),
+        searchInputStyle = list(
+          "align-self" = "inherit",
+          "background-color" = "hsl(213, 45%, 97%)",
+          border = "none",
+          "&:focus" = list(border = "none"),
+          padding = "8px 16px",
+          "margin-bottom" = "0px",
+          "text-align" = "right"
+        )
+      )
+    )
+)
+```

@@ -1,45 +1,73 @@
 library(ggplot2)
-library(ggtext)
-library(hrbrthemes)
+
+# Set default colour scales -----------------------------------------------
+
+options(ggplot2.discrete.colour = unname(palette.colors()[2:8]), # Okabe-Ito palette
+        ggplot2.discrete.fill = unname(palette.colors()[2:8]),
+        ggplot2.continuous.colour = colorspace::sequential_hcl(9, palette = "Emrld"),
+        ggplot2.continuous.fill = colorspace::sequential_hcl(9, palette = "Emrld"))
 
 # Set theme ---------------------------------------------------------------
 
-theme_long <- function() {
-  ret <- theme_ipsum(
-    grid = FALSE,
-    base_family = "Asap Condensed",
-    plot_title_family = "Asap Condensed Medium",
-    plot_title_face = "plain",
-    strip_text_family = "Asap Condensed Medium",
-    caption_face = "plain",
-    axis_title_family = "Asap Condensed Medium",
-    axis_title_size = 11.5
-  )
-  ret <- ret + theme(
-    plot.title = element_markdown(),
-    plot.subtitle = element_markdown(),
-    plot.caption = element_markdown(),
-    legend.position = "top",
-    plot.title.position = "plot",
-    plot.caption.position = "plot",
-    axis.text = element_text(margin = margin(t = 2, r = 2)),
-    axis.text.x = element_text(margin = margin(t = 2)),
-    axis.text.y = element_text(margin = margin(r = 2)),
-  )
-  ret
+theme_fira <- function(base_size = 11.5) {
+  theme_minimal(
+    base_size = base_size,
+    base_family = "Fira Code"
+  ) +
+    theme(
+      axis.text = element_text(size = rel(.9)),
+      axis.title = element_text(
+        family = "Fira Sans Medium",
+        hjust = 1
+      ),
+      legend.background = element_blank(),
+      legend.key = element_blank(),
+      legend.title = element_text(family = "Fira Sans"),
+      legend.margin = margin(base_size / 3, base_size / 3, base_size / 3, base_size / 3),
+      legend.position = "top",
+      panel.grid = element_line(colour = "#cccccc", size = .2),
+      panel.grid.minor = element_blank(),
+      panel.spacing = unit(base_size * 1.3, "pt"),
+      plot.title = ggtext::element_markdown(
+        family = "Fira Sans Medium",
+        size = rel(1.5),
+        margin = unit(c(0, 0, base_size * 1.3, 0), "pt")
+      ),
+      plot.subtitle = ggtext::element_markdown(
+        family = "Fira Sans",
+        size = rel(1.05),
+        margin = unit(c(-base_size * 0.44, 0, base_size * 1.3, 0), "pt")
+      ),
+      plot.caption = ggtext::element_markdown(
+        family = "Fira Sans",
+        margin = unit(c(base_size * 1.3, 0, 0, 0), "pt")
+      ),
+      plot.tag = ggtext::element_markdown(
+        family = "Fira Sans"
+      ),
+      plot.title.position = "plot",
+      plot.caption.position = "plot",
+      plot.margin = margin(30, 30, 30, 30),
+      strip.text = element_text(
+        family = "Fira Sans Medium",
+        size = rel(1.05),
+        hjust = 0
+      )
+    )
 }
 
-theme_set(theme_long())
+theme_set(theme_fira())
 
 # Function to specify grid lines ------------------------------------------
 
-panel_grid <- function(grid = "XY", on_top = FALSE) {
+panel_grid <- function(grid = "XY", on_top = FALSE,
+                       grid_colour = "#cccccc", grid_colour_top = "#ffffff") {
   ret <- theme(panel.ontop = on_top)
   if (grid == TRUE || is.character(grid)) {
     if (on_top == TRUE)
-      grid_col <- "#ffffff"
+      grid_col <- grid_colour_top
     else
-      grid_col <- "#cccccc"
+      grid_col <- grid_colour
     ret <- ret + theme(panel.grid = element_line(colour = grid_col,
                                                  size = .2))
     ret <- ret + theme(panel.grid.major = element_line(colour = grid_col,
