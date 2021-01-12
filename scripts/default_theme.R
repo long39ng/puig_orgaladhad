@@ -4,8 +4,12 @@ library(ggplot2)
 
 options(ggplot2.discrete.colour = unname(palette.colors()[2:8]), # Okabe-Ito palette
         ggplot2.discrete.fill = unname(palette.colors()[2:8]),
-        ggplot2.continuous.colour = colorspace::sequential_hcl(9, palette = "Emrld"),
-        ggplot2.continuous.fill = colorspace::sequential_hcl(9, palette = "Emrld"))
+        ggplot2.continuous.colour = function(...) {
+          scale_colour_viridis_c(option = "magma", ...)
+        },
+        ggplot2.continuous.fill = function(...) {
+          scale_fill_viridis_c(option = "magma", ...)
+        })
 
 # Set theme ---------------------------------------------------------------
 
@@ -113,4 +117,18 @@ panel_grid <- function(grid = "XY", on_top = FALSE,
     ret <- ret + theme(panel.grid.minor.y = element_blank())
   }
   ret
+}
+
+# Function to show unit only for top axis label ---------------------------
+
+label_x_unit <- function(x, unit) {
+  if_else(x == x[which.max(x)],
+          paste0(x, unit),
+          as.character(x))
+}
+
+label_y_unit <- function(y, unit) {
+  if_else(y == y[which.max(y)],
+          paste0(y, unit),
+          paste0(y, strrep(" ", nchar(unit))))
 }

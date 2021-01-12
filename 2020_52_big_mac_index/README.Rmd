@@ -74,3 +74,43 @@ big_mac_capita %>%
                    with the GDP per person in 2020",
        caption = "Data: *The Economist*<br>Hamburger emoji: *Twemoji*")
 ```
+
+## Extra: Net income per capita (World Bank)
+
+```{r wdi-net-income, warning=FALSE}
+nni18 <- WDI::WDI(country = unique(countrycode::countrycode(big_mac$iso_a3, "iso3c", "iso2c")),
+         indicator = c(net_income = "NY.ADJ.NNTY.PC.CD"), start = 2018, end = 2018) %>% 
+  mutate(iso_a3 = countrycode::countrycode(iso2c, "iso2c", "iso3c"))
+
+big_mac_net <- big_mac %>% 
+  filter(date == "2018-07-01") %>% 
+  inner_join(nni18 %>% select(iso_a3, net_income), by = "iso_a3") %>% 
+  drop_na(net_income) %>% 
+  mutate(n_burgers_net = net_income / dollar_price / 1000)
+```
+
+```{r big-mac-net-income, fig.width=7, fig.height=12, optipng=''}
+big_mac_net %>% 
+  ggplot(aes(x = fct_reorder(name, n_burgers_net), y = n_burgers_net)) +
+  geom_isotype_col(image = burger_img,
+                   img_width = unit(1, "native"),
+                   img_height = unit(.7, "native"),
+                   ncol = NA, nrow = 1, hjust = 0, vjust = .5) +
+  scale_y_continuous(position = "right", labels = function(x) {
+    x <- paste0(x, "k")
+    x[x == "0k"] <- "0"
+    x
+  }) +
+  # annotate(geom = "text", x = 36.5, y = 17.5, label = "}",
+  #          hjust = 0, vjust = .39, angle = 270,
+  #          family = "Libre Franklin", colour = "#c792ea", size = 7) +
+  # annotate(geom = "text", x = 35.9, y = 17.5, label = "1000\nBig Macs",
+  #          hjust = .5, vjust = 1, lineheight = 1,
+  #          family = "Libre Franklin", colour = "#c792ea") +
+  coord_flip() +
+  labs(x = NULL, y = NULL,
+       # title = toupper("Big Macs per capita"),
+       subtitle = "How many Big Macs could be bought at local price<br>
+                   with the net national income per capita in 2018",
+       caption = "Data: *The Economist*, World Bank<br>Hamburger emoji: *Twemoji*")
+```
