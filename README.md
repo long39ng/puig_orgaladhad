@@ -13,3 +13,9 @@ My attempts at [#tidytuesday](https://github.com/rfordatascience/tidytuesday)
 | [Week 48 (2020-11-24)](2020_48_washington_trails) | [Washington Trails](2020_48_washington_trails) | <a href="2020_48_washington_trails"><img src="2020_48_washington_trails/figs/corr-plot-1.png" alt="Washington Trails" height="300"></a> |
 | [Week 50 (2020-12-08)](2020_50_women_of_2020) | [Women of 2020](2020_50_women_of_2020) | <a href="https://rpubs.com/long39ng/702061"><img src="2020_50_women_of_2020/figs/women_tbl_ss.png" alt="Women of 2020" height="300"></a> |
 | [Week 52 (2020-12-22)](2020_52_big_mac_index) | [The Big Mac Index](2020_52_big_mac_index) | <a href="2020_52_big_mac_index"><img src="2020_52_big_mac_index/figs/big-mac-capita-1.png" alt="The Big Mac Index" height="300"></a> |
+
+## 2021
+
+| <!-- --> | <!-- --> | <!-- --> |
+| --- | --- | --- |
+| [Week 3 (2021-01-12)](2021_03_art_collections) | [Art collections](2021_03_art_collections) |  <a href="2021_03_art_collections"><img src="2021_03_art_collections/figs/stripes-plot-1.png" alt="Art collections" height="300"></a> |
