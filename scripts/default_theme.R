@@ -32,23 +32,24 @@ theme_fira <- function(base_size = 11.5) {
       panel.grid = element_line(colour = "#cccccc", size = .2),
       panel.grid.minor = element_blank(),
       panel.spacing = unit(base_size * 1.3, "pt"),
-      plot.title = ggtext::element_markdown(
+      plot.title = element_text(
         family = "Fira Sans Medium",
         size = rel(1.5),
+        lineheight = 1.15,
         margin = unit(c(0, 0, base_size * 1.3, 0), "pt")
       ),
-      plot.subtitle = ggtext::element_markdown(
+      plot.subtitle = element_text(
         family = "Fira Sans",
         size = rel(1.05),
+        lineheight = 1.15,
         margin = unit(c(-base_size * 0.44, 0, base_size * 1.3, 0), "pt")
       ),
-      plot.caption = ggtext::element_markdown(
+      plot.caption = element_text(
         family = "Fira Sans",
+        lineheight = 1.15,
         margin = unit(c(base_size * 1.3, 0, 0, 0), "pt")
       ),
-      plot.tag = ggtext::element_markdown(
-        family = "Fira Sans"
-      ),
+      plot.tag = element_text(family = "Fira Sans"),
       plot.title.position = "plot",
       plot.caption.position = "plot",
       plot.margin = margin(30, 30, 30, 30),
