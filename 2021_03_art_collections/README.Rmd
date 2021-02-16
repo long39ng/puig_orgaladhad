@@ -39,7 +39,7 @@ artwork <- artwork %>%
 saveRDS(artwork, here::here("2021_03_art_collections/artwork.RDS"))
 ```
 
-```{r stripes-plot, fig.asp=.5}
+```{r stripes-plot, fig.asp=.5, optipng=''}
 artwork <- readRDS(here::here("2021_03_art_collections/artwork.RDS"))
 
 artwork_by_year <- artwork %>% 
@@ -61,9 +61,8 @@ artwork_by_year %>%
   scale_fill_identity() +
   coord_cartesian(clip = "off") +
   theme_void(base_family = "Manrope Extra Bold") +
-  theme(#text = element_text(face = "bold"),
-        plot.margin = margin(15, 40, 15, 40)) +
-  labs(title = "Median colours of artwork in the Tate Art museum",
+  theme(plot.margin = margin(15, 40, 15, 40)) +
+  labs(title = "Median colours of artwork in the Tate art museum",
        caption = "Data: Tate")
 ```
 

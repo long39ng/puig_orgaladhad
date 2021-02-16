@@ -53,9 +53,8 @@ artwork_by_year %>%
   scale_fill_identity() +
   coord_cartesian(clip = "off") +
   theme_void(base_family = "Manrope Extra Bold") +
-  theme(#text = element_text(face = "bold"),
-        plot.margin = margin(15, 40, 15, 40)) +
-  labs(title = "Median colours of artwork in the Tate Art museum",
+  theme(plot.margin = margin(15, 40, 15, 40)) +
+  labs(title = "Median colours of artwork in the Tate art museum",
        caption = "Data: Tate")
 #> Warning: Removed 52818 rows containing missing values (geom_text).
 ```

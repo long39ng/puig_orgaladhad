@@ -68,7 +68,7 @@ spiral_data <- tibble(a = 1e4,
 #   summarise(sum(dist, na.rm = TRUE)) # Close enough
 ```
 
-```{r plot, fig.width=8, fig.height=10}
+```{r plot, fig.width=8, fig.height=10, optipng=''}
 lines_data %>% 
   ggplot(aes(x, y)) +
   annotation_raster(bg_img, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
