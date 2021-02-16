@@ -81,7 +81,7 @@ lines_data %>%
   scale_colour_identity() +
   coord_equal() +
   annotate("text", x = mean(c(-5e4, 17e4)), y = -5e4,
-           label = "CITY AND RURAL POPULATION.\n1980.",
+           label = "CITY AND RURAL POPULATION.\n1890.",
            family = "Airborne II Pilot", size = 6) +
   annotate("text", x = 22e3, y = 4e3,
            label = paste(format(city_rural$Population[1], big.mark = ","),
