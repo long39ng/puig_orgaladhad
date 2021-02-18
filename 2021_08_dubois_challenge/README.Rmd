@@ -109,3 +109,9 @@ lines_data %>%
            family = "Courier", fontface = "bold", size = 2.5) +
   theme_void()
 ```
+
+<details><summary>Session information</summary>
+```{r sesh}
+sessionInfo()
+```
+</details>

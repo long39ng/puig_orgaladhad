@@ -108,3 +108,52 @@ lines_data %>%
 ```
 
 ![](figs/plot-1.png)<!-- -->
+
+<details>
+<summary>
+Session information
+</summary>
+
+``` r
+sessionInfo()
+#> R version 4.0.4 (2021-02-15)
+#> Platform: x86_64-pc-linux-gnu (64-bit)
+#> Running under: openSUSE Leap 15.2
+#> 
+#> Matrix products: default
+#> BLAS/LAPACK: /usr/lib64/libopenblas_pthreads.so.0
+#> 
+#> locale:
+#>  [1] LC_CTYPE=en_GB.UTF-8       LC_NUMERIC=C              
+#>  [3] LC_TIME=en_GB.UTF-8        LC_COLLATE=en_GB.UTF-8    
+#>  [5] LC_MONETARY=en_GB.UTF-8    LC_MESSAGES=en_GB.UTF-8   
+#>  [7] LC_PAPER=en_GB.UTF-8       LC_NAME=C                 
+#>  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+#> [11] LC_MEASUREMENT=en_GB.UTF-8 LC_IDENTIFICATION=C       
+#> 
+#> attached base packages:
+#> [1] stats     graphics  grDevices utils     datasets  methods   base     
+#> 
+#> other attached packages:
+#>  [1] magick_2.6.0    forcats_0.5.1   stringr_1.4.0   dplyr_1.0.4    
+#>  [5] purrr_0.3.4     readr_1.4.0     tidyr_1.1.2     tibble_3.0.6   
+#>  [9] ggplot2_3.3.3   tidyverse_1.3.0
+#> 
+#> loaded via a namespace (and not attached):
+#>  [1] tidyselect_1.1.0  xfun_0.21         haven_2.3.1       colorspace_2.0-0 
+#>  [5] vctrs_0.3.6       generics_0.1.0    htmltools_0.5.1.1 yaml_2.2.1       
+#>  [9] rlang_0.4.10      pillar_1.4.7      glue_1.4.2        withr_2.4.1      
+#> [13] DBI_1.1.1         dbplyr_2.1.0      modelr_0.1.8      readxl_1.3.1     
+#> [17] lifecycle_1.0.0   munsell_0.5.0     gtable_0.3.0      cellranger_1.1.0 
+#> [21] ragg_1.1.0        rvest_0.99.0.9000 evaluate_0.14     labeling_0.4.2   
+#> [25] knitr_1.31        curl_4.3          parallel_4.0.4    highr_0.8        
+#> [29] broom_0.7.4       Rcpp_1.0.6        scales_1.1.1      backports_1.2.1  
+#> [33] jsonlite_1.7.2    farver_2.0.3      systemfonts_1.0.1 fs_1.5.0         
+#> [37] textshaping_0.3.0 hms_1.0.0         digest_0.6.27     stringi_1.5.3    
+#> [41] grid_4.0.4        cli_2.3.0         tools_4.0.4       magrittr_2.0.1   
+#> [45] crayon_1.4.1      pkgconfig_2.0.3   ellipsis_0.3.1    xml2_1.3.2       
+#> [49] reprex_1.0.0      lubridate_1.7.9.2 assertthat_0.2.1  rmarkdown_2.6.6  
+#> [53] httr_1.4.2        rstudioapi_0.13   R6_2.5.0          compiler_4.0.4
+```
+
+</details>
