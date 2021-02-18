@@ -5,7 +5,8 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, comment = "#>",
-                      fig.path = "figs/", dpi = 300)
+                      fig.path = "figs/", dpi = 300,
+                      dev.args = list(bg = "transparent"))
 knitr::knit_hooks$set(optipng = knitr::hook_optipng)
 ```
 

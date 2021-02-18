@@ -28,13 +28,13 @@ landline <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/t
 glimpse(landline)
 #> Rows: 6,974
 #> Columns: 7
-#> $ entity        [3m[38;5;246m<chr>[39m[23m "Afghanistan", "Afghanistan", "Afghanistan", "Afghanist…
-#> $ code          [3m[38;5;246m<chr>[39m[23m "AFG", "AFG", "AFG", "AFG", "AFG", "AFG", "AFG", "AFG",…
-#> $ year          [3m[38;5;246m<int>[39m[23m 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1…
-#> $ total_pop     [3m[38;5;246m<int>[39m[23m 12412000, 13299000, 14486000, 15817000, 17076000, 18111…
-#> $ gdp_per_cap   [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 1064, 1…
-#> $ landline_subs [3m[38;5;246m<dbl>[39m[23m 0.29553, 0.28475, 0.20742, 0.19212, 0.17931, 0.16960, 0…
-#> $ continent     [3m[38;5;246m<chr>[39m[23m "Asia", "Asia", "Asia", "Asia", "Asia", "Asia", "Asia",…
+#> $ entity        <chr> "Afghanistan", "Afghanistan", "Afghanistan", "Afghanist…
+#> $ code          <chr> "AFG", "AFG", "AFG", "AFG", "AFG", "AFG", "AFG", "AFG",…
+#> $ year          <int> 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1…
+#> $ total_pop     <int> 12412000, 13299000, 14486000, 15817000, 17076000, 18111…
+#> $ gdp_per_cap   <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 1063.63…
+#> $ landline_subs <dbl> 0.29553158, 0.28475432, 0.20742093, 0.19211533, 0.17931…
+#> $ continent     <chr> "Asia", "Asia", "Asia", "Asia", "Asia", "Asia", "Asia",…
 
 mobile <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-11-10/mobile.csv',
                             col_types = "cciinnc")
@@ -42,13 +42,13 @@ mobile <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tid
 glimpse(mobile)
 #> Rows: 6,277
 #> Columns: 7
-#> $ entity      [3m[38;5;246m<chr>[39m[23m "Afghanistan", "Afghanistan", "Afghanistan", "Afghanistan…
-#> $ code        [3m[38;5;246m<chr>[39m[23m "AFG", "AFG", "AFG", "AFG", "AFG", "AFG", "AFG", "AFG", "…
-#> $ year        [3m[38;5;246m<int>[39m[23m 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 199…
-#> $ total_pop   [3m[38;5;246m<int>[39m[23m 13032161, 14069854, 15472076, 17053213, 18553819, 1978988…
-#> $ gdp_per_cap [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 1064, 109…
-#> $ mobile_subs [3m[38;5;246m<dbl>[39m[23m 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0…
-#> $ continent   [3m[38;5;246m<chr>[39m[23m "Asia", "Asia", "Asia", "Asia", "Asia", "Asia", "Asia", "…
+#> $ entity      <chr> "Afghanistan", "Afghanistan", "Afghanistan", "Afghanistan…
+#> $ code        <chr> "AFG", "AFG", "AFG", "AFG", "AFG", "AFG", "AFG", "AFG", "…
+#> $ year        <int> 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 199…
+#> $ total_pop   <int> 13032161, 14069854, 15472076, 17053213, 18553819, 1978988…
+#> $ gdp_per_cap <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 1063.636,…
+#> $ mobile_subs <dbl> 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.…
+#> $ continent   <chr> "Asia", "Asia", "Asia", "Asia", "Asia", "Asia", "Asia", "…
 ```
 
 ``` r
@@ -70,7 +70,7 @@ map_hist_layout <- c(
 #   slice_max(mobile_subs) %>% 
 #   View()
 
-mobile_img <- image_graph(875, 600, res = 96)
+mobile_img <- image_graph(875, 600, res = 96, bg = "transparent")
 
 mobile_year_list <- group_split(mobile, year)
 

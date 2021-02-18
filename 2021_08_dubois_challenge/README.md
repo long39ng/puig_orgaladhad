@@ -14,6 +14,7 @@ bg_img <- "https://upload.wikimedia.org/wikipedia/commons/8/86/Tattered_Edges.pn
   # Originally posted to Flickr by Playingwithbrushes at
   # https://flickr.com/photos/82518118@N00/2926159152
   image_read() %>% 
+  image_fill(color = "transparent", refcolor = "white", fuzz = 4) %>% 
   image_modulate(brightness = 150) %>% 
   image_flip() %>% 
   image_raster(tidy = FALSE)

@@ -5,7 +5,8 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, comment = "#>",
-                      fig.path = "figs/", dpi = 300)
+                      fig.path = "figs/", dpi = 300,
+                      dev.args = list(bg = "transparent"))
 ```
 
 ```{r prep, message=FALSE}
@@ -60,7 +61,7 @@ map_hist_layout <- c(
 #   slice_max(mobile_subs) %>% 
 #   View()
 
-mobile_img <- image_graph(875, 600, res = 96)
+mobile_img <- image_graph(875, 600, res = 96, bg = "transparent")
 
 mobile_year_list <- group_split(mobile, year)
 
