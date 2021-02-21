@@ -1,4 +1,4 @@
-TidyTuesday 2021/08: Dubois Challenge
+TidyTuesday 2021/08: Du Bois Challenge
 ================
 
 ``` r
@@ -71,6 +71,10 @@ spiral_data <- tibble(a = 1e4,
 lines_data %>% 
   ggplot(aes(x, y)) +
   annotation_raster(bg_img, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+  geom_segment(aes(xend = xend, yend = yend),
+               lineend = "round", size = 2.1, show.legend = FALSE) +
+  geom_path(data = spiral_data,
+            size = 2.1, lineend = "round") +
   geom_segment(aes(xend = xend, yend = yend, colour = colour),
                lineend = "round", size = 2, show.legend = FALSE) +
   geom_path(data = spiral_data,
@@ -85,22 +89,24 @@ lines_data %>%
   annotate("text", x = 22e3, y = 4e3,
            label = paste(format(city_rural$Population[1], big.mark = ","),
                          "NEGROES IN CITIES\nOF OVER 10,000 INHABITANTS"),
-           family = "Airborne II Pilot", size = 2.5, lineheight = .75) +
+           family = "Airborne II Pilot", size = 2.5, lineheight = .75,
+           colour = "grey20") +
   annotate("text", x = lines_data$x[2], y = 4e3,
            label = paste(format(city_rural$Population[2], big.mark = ","),
                          "NEGROES IN CITIES\n FROM 5,000 TO 10,000"),
            family = "Airborne II Pilot", size = 2.5, lineheight = .75,
-           hjust = "left") +
+           hjust = "left", colour = "grey20") +
   annotate("text", x = lines_data$x[3], y = mean(lines_data$y[3:4]),
            label = paste(format(city_rural$Population[3], big.mark = ","),
                          "\nNEGROES\nIN CITIES\n FROM\n2,500 TO 5,000"),
-           family = "Airborne II Pilot", size = 2.5, lineheight = .75) +
+           family = "Airborne II Pilot", size = 2.5, lineheight = .75,
+           colour = "grey20") +
   annotate("text", x = spiral_data$x[1] - 7e3, y = spiral_data$y[1] - 8e3,
            label = format(city_rural$Population[4], big.mark = ","),
-           family = "Airborne II Pilot", size = 2.5) +
+           family = "Airborne II Pilot", size = 2.5, colour = "grey20") +
   annotate("text", x = mean(c(-5e4, 17e4)), y = max(spiral_data$y) + 4e3,
            label = toupper(paste("negroes living in the", city_rural$Category[4])),
-           family = "Airborne II Pilot", size = 2.5) +
+           family = "Airborne II Pilot", size = 2.5, colour = "grey20") +
   annotate("text", x = mean(c(-5e4, 17e4)), y = 23e4,
            label = "Long Nguyen (@long39ng) · #DuboisChallenge",
            family = "Courier", fontface = "bold", size = 2.5) +
@@ -152,7 +158,7 @@ sessionInfo()
 #> [37] textshaping_0.3.0 hms_1.0.0         digest_0.6.27     stringi_1.5.3    
 #> [41] grid_4.0.4        cli_2.3.0         tools_4.0.4       magrittr_2.0.1   
 #> [45] crayon_1.4.1      pkgconfig_2.0.3   ellipsis_0.3.1    xml2_1.3.2       
-#> [49] reprex_1.0.0      lubridate_1.7.9.2 assertthat_0.2.1  rmarkdown_2.6.6  
+#> [49] reprex_1.0.0      lubridate_1.7.9.2 assertthat_0.2.1  rmarkdown_2.7.1  
 #> [53] httr_1.4.2        rstudioapi_0.13   R6_2.5.0          compiler_4.0.4
 ```
 

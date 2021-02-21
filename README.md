@@ -6,7 +6,7 @@ My attempts at [#tidytuesday](https://github.com/rfordatascience/tidytuesday)
 
 | <!-- --> | <!-- --> | <!-- --> |
 | --- | --- | --- |
-| [Week 8 (2021-02-16)](2021_08_dubois_challenge) | [DuBois Challenge](2021_08_dubois_challenge) |  <a href="2021_08_dubois_challenge"><img src="2021_08_dubois_challenge/figs/plot-1.png" alt="DuBois plate 11 remake" height="300"></a> |
+| [Week 8 (2021-02-16)](2021_08_dubois_challenge) | [DuBois Challenge](2021_08_dubois_challenge) |  <a href="2021_08_dubois_challenge"><img src="2021_08_dubois_challenge/figs/plot-1.png" alt="Du Bois plate 11 remake" height="300"></a> <img src="https://raw.githubusercontent.com/ajstarks/dubois-data-portraits/master/challenge/challenge06/original-plate-11.jpg" alt="Du Bois plate 11 original" height="300"> |
 | [Week 3 (2021-01-12)](2021_03_art_collections) | [Art collections](2021_03_art_collections) |  <a href="2021_03_art_collections"><img src="2021_03_art_collections/figs/stripes-plot-1.png" alt="Art collections" height="300"></a> |
 
 ## 2020
