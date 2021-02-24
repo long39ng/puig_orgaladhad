@@ -46,37 +46,42 @@ roses <- earn %>%
   group_split(quarter_label)
 ```
 
-```{r frames}
+```{r frames, warning=FALSE}
 agg_png("figs/tmp/frame-%02d.png",
         width = 1294, height = 800, res = 96, bg = "#1A1D21")
 
 walk(roses, ~ print({
-  ggplot(.x) +
-    geom_path(aes(x, y, colour = x * y), show.legend = FALSE) +
-    geom_text(aes(x = 0, y = max(y),
-                  label = scales::dollar(median_weekly_earn)),
-              colour = "white", size = 5, nudge_y = 250) +
-    scale_x_continuous(limits = 1850 * c(-1, 1)) +
-    scale_y_continuous(limits = 1850 * c(-1, 1)) +
-    scale_colour_viridis_c(option = "magma", begin = .3) +
-    facet_grid(sex ~ str_wrap(race2, 17), switch = "both") +
-    coord_equal() +
-    labs(title = "Median Weekly Earning in the US — People Ages 25 and Over",
-         subtitle = .x$quarter_label[1],
-         caption = "Note: \"Hispanic or Latino\" overlaps with other categories\nData: US Bureau of Labor Statistics — Visualisation: Long Nguyen (@long39ng) · #TidyTuesday") +
-    theme_void(base_size = 20) +
-    theme(text = element_text(family = "Source Sans Pro",
-                              colour = "white"),
-          plot.background = element_rect(fill = "#1A1D21", colour = "#1A1D21"),
-          plot.margin = margin(20, 20, 20, 20),
-          plot.title.position = "plot",
-          plot.subtitle = element_text(face = "bold",
-                                       margin = margin(20, 10, 20, 10)),
-          plot.caption = element_text(size = 12,
-                                      lineheight = 1.2,
-                                      margin = margin(60, 10, 10, 10)),
-          plot.caption.position = "plot",
-          strip.text.y = element_text(margin = margin(10, 20, 10, 10)))
+  .x %>% 
+  group_by(sex, race2) %>% 
+  mutate(max_y = max(y),
+         median_weekly_earn = if_else(row_number() == 1,
+                                      median_weekly_earn,
+                                      NA_integer_)) %>% 
+  ungroup() %>% 
+  ggplot() +
+  geom_path(aes(x, y, colour = x * y), show.legend = FALSE) +
+  geom_text(aes(x = 0, y = max_y,
+                label = scales::dollar(median_weekly_earn)),
+            colour = "white", size = 5, nudge_y = 350) +
+  scale_colour_viridis_c(option = "magma", begin = .3) +
+  facet_grid(sex ~ str_wrap(race2, 17), switch = "both") +
+  coord_equal(xlim = 1800 * c(-1, 1), ylim = 1800 * c(-1, 1), clip = "off") +
+  labs(title = "Median Weekly Earning in the US — People Ages 25 and Over",
+       subtitle = .x$quarter_label[1],
+       caption = "Note: \"Hispanic or Latino\" overlaps with other categories\nData: US Bureau of Labor Statistics — Visualisation: Long Nguyen (@long39ng) · #TidyTuesday") +
+  theme_void(base_size = 20) +
+  theme(text = element_text(family = "Source Sans Pro",
+                            colour = "white"),
+        plot.background = element_rect(fill = "#1A1D21", colour = "#1A1D21"),
+        plot.margin = margin(20, 20, 20, 20),
+        plot.title.position = "plot",
+        plot.subtitle = element_text(face = "bold",
+                                     margin = margin(20, 10, 20, 10)),
+        plot.caption = element_text(size = 12,
+                                    lineheight = 1.2,
+                                    margin = margin(60, 10, 10, 10)),
+        plot.caption.position = "plot",
+        strip.text.y = element_text(margin = margin(10, 20, 10, 10)))
 }))
 
 dev.off()
