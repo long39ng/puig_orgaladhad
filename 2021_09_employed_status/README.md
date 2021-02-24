@@ -60,7 +60,7 @@ walk(roses, ~ print({
   scale_colour_viridis_c(option = "magma", begin = .3) +
   facet_grid(sex ~ str_wrap(race2, 17), switch = "both") +
   coord_equal(xlim = 1800 * c(-1, 1), ylim = 1800 * c(-1, 1), clip = "off") +
-  labs(title = "Median Weekly Earning in the US — People Ages 25 and Over",
+  labs(title = "Median Weekly Earnings in the US — People Ages 25 and Over",
        subtitle = .x$quarter_label[1],
        caption = "Note: \"Hispanic or Latino\" overlaps with other categories\nData: US Bureau of Labor Statistics — Visualisation: Long Nguyen (@long39ng) · #TidyTuesday") +
   theme_void(base_size = 20) +
