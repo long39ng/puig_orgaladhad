@@ -76,12 +76,11 @@ legend_palette <- colorNumeric(
 )
 
 find_country <- function(lng, lat) {
-  ref <- st_transform(world_map, 2163)
+  ref <- world_map
   st_agr(ref) <- "constant"
 
   clicked_iso2c <- st_point(c(lng, lat)) %>%
     st_sfc(crs = st_crs(world_map)) %>%
-    st_transform(2163) %>%
     st_intersection(ref, .) %>%
     pull(iso_a2)
 
@@ -172,7 +171,10 @@ server <- function(input, output, session) {
   })
 
   output$cormap <- renderLeaflet({
-    leaflet(world_map) %>%
+    leaflet(
+      world_map,
+      options = leafletOptions(zoomDelta = .25, zoomSnap = .25)
+    ) %>%
       addPolygons(fillOpacity = 0, weight = 0) %>%
       addLegend(
         pal = legend_palette,
@@ -182,7 +184,8 @@ server <- function(input, output, session) {
           transform = function(x) sort(x, decreasing = TRUE)
         ),
         title = "Correlation"
-      )
+      ) %>%
+      setView(lat = 30, lng = 0, zoom = 2.25)
   })
 
   observe({
