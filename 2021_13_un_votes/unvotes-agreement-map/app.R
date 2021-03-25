@@ -40,19 +40,14 @@ world_map <- readRDS("world_map.RDS")
 vote_cors <- function(tbl) {
   tbl %>%
     mutate(vote = as.integer(vote)) %>%
-    pairwise_cor(country, rcid, vote, use = "pairwise.complete.obs") %>%
+    pairwise_cor(item = country, feature = rcid, value = vote,
+                 use = "pairwise.complete.obs", diag = TRUE) %>%
     left_join(country_codes, by = c("item2" = "country"))
 }
 
 filter_country <- function(tbl, country) {
   tbl %>%
     filter(item1 == country) %>%
-    add_row(
-      item1 = country,
-      item2 = country,
-      correlation = 1,
-      iso_a2 = country_codes$iso_a2[country_codes$country == country]
-    ) %>%
     mutate(label = paste0("<strong>", item2, ":</strong> ", round(correlation, 2)))
 }
 
