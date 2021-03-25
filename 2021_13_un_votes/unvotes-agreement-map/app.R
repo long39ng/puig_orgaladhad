@@ -102,6 +102,9 @@ ui <- fluidPage(
         background-color: #eeeeee;
         font-family: 'Fira Sans', sans-serif;
       }
+      ul {
+        padding-inline-start: inherit;
+      }
       .irs, .leaflet, .info {
         font-family: 'Fira Sans', sans-serif;
         font-variant-numeric: tabular-nums;
@@ -141,10 +144,18 @@ ui <- fluidPage(
       ),
       br(),
       hr(),
-      div(a(
-        "Source code",
-        href = "https://github.com/long39ng/puig_orgaladhad/tree/main/2021_13_un_votes/"
-      ))
+      tags$ul(
+        tags$li(
+          "Data from the ",
+          a("unvotes", href = "https://github.com/dgrtwo/unvotes"),
+          " R package ",
+          a("(Codebook)", href = "https://doi.org/10.7910/DVN/LEJUQZ/DYNZPA")
+        ),
+        tags$li(a(
+          "Source code",
+          href = "https://github.com/long39ng/puig_orgaladhad/tree/main/2021_13_un_votes/"
+        ))
+      )
     ),
     mainPanel(width = 10,
       h2(textOutput("maptitle")),
