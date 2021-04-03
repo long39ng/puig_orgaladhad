@@ -39,8 +39,7 @@ world_map <- readRDS("world_map.RDS")
 
 vote_cors <- function(tbl) {
   tbl %>%
-    mutate(vote = as.integer(vote)) %>%
-    pairwise_cor(item = country, feature = rcid, value = vote,
+    pairwise_cor(item = country, feature = rcid, value = vote_num,
                  use = "pairwise.complete.obs", diag = TRUE) %>%
     left_join(country_codes, by = c("item2" = "country"))
 }
